@@ -1,0 +1,10 @@
+import { AxiosError } from "axios";
+import { useMutation } from "@tanstack/react-query";
+import { resendCode } from "../actions/resend-code.action";
+import { ServerException } from "@/types/server-exception.response";
+
+export const useResendEmailCodeMutation = () => {
+  return useMutation<string, AxiosError<ServerException>, string>({
+    mutationFn: resendCode,
+  });
+};

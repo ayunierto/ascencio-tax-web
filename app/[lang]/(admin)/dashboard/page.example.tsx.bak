@@ -1,0 +1,113 @@
+import { Suspense } from 'react';
+import { notFound } from 'next/navigation';
+import { getDictionary } from '@/lib/i18n/dictionaries';
+import { getUser } from '@/lib/actions/auth/get-session';
+import type { PageProps } from '@/.next/types/app/[lang]/(admin)/dashboard/page';
+
+// Este archivo es un ejemplo de cómo implementar una página admin
+// con autenticación y i18n según Next.js 16
+
+// Componente de métricas (ejemplo de Server Component)
+async function DashboardMetrics() {
+  // Simular fetch de datos
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  const metrics = {
+    totalAppointments: 42,
+    pendingReviews: 8,
+    completedToday: 5,
+  };
+  
+  return (
+    <div className="grid md:grid-cols-3 gap-6 mb-8">
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h3 className="text-sm text-gray-600 mb-2">Total Appointments</h3>
+        <p className="text-3xl font-bold">{metrics.totalAppointments}</p>
+      </div>
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h3 className="text-sm text-gray-600 mb-2">Pending Reviews</h3>
+        <p className="text-3xl font-bold">{metrics.pendingReviews}</p>
+      </div>
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h3 className="text-sm text-gray-600 mb-2">Completed Today</h3>
+        <p className="text-3xl font-bold">{metrics.completedToday}</p>
+      </div>
+    </div>
+  );
+}
+
+// Skeleton para loading state
+function MetricsSkeleton() {
+  return (
+    <div className="grid md:grid-cols-3 gap-6 mb-8 animate-pulse">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="bg-gray-200 h-32 rounded-lg" />
+      ))}
+    </div>
+  );
+}
+
+// Página principal (Server Component)
+export default async function DashboardPage({ params }: PageProps) {
+  // 1. Obtener el locale
+  const { lang } = await params;
+  
+  // 2. Validar locale
+  const validLocales = ['en', 'es'];
+  if (!validLocales.includes(lang)) {
+    notFound();
+  }
+  
+  // 3. Verificar autenticación
+  const user = await getUser();
+  
+  if (!user) {
+    // El DAL ya redirige, pero por seguridad:
+    notFound();
+  }
+  
+  // 4. Cargar traducciones
+  const dict = await getDictionary(lang as 'en' | 'es');
+  
+  // 5. Renderizar con Suspense para loading states
+  return (
+    <div className="p-6">
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">{dict.dashboard.title}</h1>
+        <p className="text-gray-600">
+          {dict.dashboard.welcome}, {user.name}
+        </p>
+      </header>
+
+      {/* Métricas con Suspense */}
+      <Suspense fallback={<MetricsSkeleton />}>
+        <DashboardMetrics />
+      </Suspense>
+
+      {/* Tabla de citas */}
+      <section className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-xl font-bold mb-4">{dict.dashboard.todayAppointments}</h2>
+        {/* Agregar tabla aquí */}
+        <p className="text-gray-500">No appointments for today</p>
+      </section>
+    </div>
+  );
+}
+
+// Metadata
+export async function generateMetadata({ params }: PageProps) {
+  const { lang } = await params;
+  const dict = await getDictionary(lang as 'en' | 'es');
+  
+  return {
+    title: `${dict.dashboard.title} | Ascencio Tax`,
+  };
+}
+
+// IMPORTANTE: Esta página debe estar en:
+// app/[lang]/(admin)/dashboard/page.tsx
+//
+// El route group (admin) permite:
+// 1. URL limpia: /en/dashboard (no /en/(admin)/dashboard)
+// 2. Layout compartido: app/[lang]/(admin)/layout.tsx con sidebar
+// 3. Protección centralizada: todas las páginas en (admin) requieren auth

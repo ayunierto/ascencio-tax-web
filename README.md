@@ -1,33 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ascencio Tax Web Application
 
-## Getting Started
+Aplicación web profesional para gestión de servicios fiscales construida con Next.js 16, siguiendo las mejores prácticas y documentación oficial.
 
-First, run the development server:
+## 🚀 Stack Tecnológico
+
+- **Framework**: Next.js 16.0.3 (App Router)
+- **UI**: React 19 + TypeScript 5
+- **Styling**: Tailwind CSS 4 + shadcn/ui
+- **Forms**: React Hook Form + Zod
+- **State**: Zustand 5.0.2
+- **HTTP**: Axios
+- **i18n**: Next.js integrado (en, es)
+
+## 📁 Estructura del Proyecto
+
+```
+ascencio-tax-web/
+├── app/[lang]/              # App Router con i18n
+│   ├── (public)/           # Páginas públicas
+│   ├── (auth)/             # Autenticación
+│   └── (admin)/            # Área protegida
+├── components/             # Componentes React
+├── lib/                   # Lógica de negocio
+├── types/                # TypeScript types
+├── dictionaries/         # Traducciones
+└── proxy.ts             # Middleware
+```
+
+## 🔐 Autenticación
+
+Implementación según [guía oficial de Next.js 16](https://nextjs.org/docs/app/guides/authentication):
+
+- Session Management con cookies httpOnly
+- Server Actions para signin/signup/signout
+- Data Access Layer centralizada
+- Proxy para protección de rutas
+
+## 🌍 Internacionalización
+
+- Idiomas: Inglés (en), Español (es)
+- URLs: `/en/admin`, `/es/admin`
+- Detección automática de idioma
+
+## 📋 Comandos
+
+```bash
+# Desarrollo
+npm run dev
+
+# Build
+npm run build
+
+# Lint
+npm run lint
+
+# Type check
+npx tsc --noEmit
+```
+
+## 🚀 Getting Started
+
+1. Instalar dependencias:
+
+```bash
+npm install
+```
+
+2. Configurar variables de entorno:
+
+```bash
+cp .env.example .env.local
+```
+
+3. Ejecutar en desarrollo:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Abrir http://localhost:4000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📚 Documentación
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **[AGENT.md](./AGENT.md)** - Guía completa de arquitectura
+- **[QUICK-REFERENCE.md](./QUICK-REFERENCE.md)** - Referencia rápida
+- **[Next.js Docs](https://nextjs.org/docs)** - Documentación oficial
 
-## Learn More
+## ✅ Checklist Antes de Commit
 
-To learn more about Next.js, take a look at the following resources:
+- [ ] `npm run build` exitoso
+- [ ] `npx tsc --noEmit` sin errores
+- [ ] Server Components sin `'use client'` innecesario
+- [ ] Páginas admin verifican sesión
+- [ ] i18n implementado
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Última actualización**: 15 de diciembre de 2025  
+**Next.js**: 16.0.3
 
 ## Deploy on Vercel
 
