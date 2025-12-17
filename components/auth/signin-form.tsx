@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Field,
   FieldDescription,
@@ -11,12 +12,14 @@ import {
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import type { Dictionary } from '@/lib/i18n/dictionaries';
+import { signIn } from '@/lib/actions/auth/signin';
 import OrContinueWith from './components/or-continue-witch';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { useMemo, useState, useTransition } from 'react';
 import z from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 
 interface SigninFormProps {
   dict: Dictionary;
@@ -29,6 +32,10 @@ export function SigninForm({
   lang,
   ...props
 }: React.ComponentProps<'form'> & SigninFormProps) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [formError, setFormError] = useState<string | null>(null);
+
   const signinSchema = useMemo(
     () =>
       z.object({
@@ -51,7 +58,18 @@ export function SigninForm({
   });
 
   const onSubmit = (data: SigninDto) => {
-    console.log(data);
+    setFormError(null);
+    startTransition(async () => {
+      const result = await signIn(data);
+      if (!result.success) {
+        setFormError(
+          result.error || dict.auth.common.errors.invalidCredentials,
+        );
+        return;
+      }
+      router.push(`/${lang}`);
+      router.refresh();
+    });
   };
 
   return (
@@ -109,21 +127,47 @@ export function SigninForm({
           )}
         />
 
+        {formError && (
+          <Alert variant="destructive">
+            <AlertDescription>
+              <p>{formError}</p>
+            </AlertDescription>
+          </Alert>
+        )}
+
         <Field>
-          <Button type="submit">{dict.auth.signIn.signIn}</Button>
+          <Button type="submit" disabled={isPending}>
+            {dict.auth.signIn.signIn}
+          </Button>
         </Field>
 
         <OrContinueWith text={dict.auth.common.orContinueWith} />
 
         <Field>
-          <Button variant="outline" type="button" disabled>
+          <Button
+            variant="outline"
+            type="button"
+            onClick={() => {
+              try {
+                const base =
+                  process.env.NEXT_PUBLIC_API_URL ||
+                  'http://localhost:3001/api/v1';
+                const u = new URL(base);
+                const apiBasePath = u.pathname.replace(/\/$/, '');
+                const oauthUrl = `${u.origin}${apiBasePath}/auth/google`;
+                window.location.href = oauthUrl;
+              } catch (e) {
+                console.error('Invalid NEXT_PUBLIC_API_URL', e);
+              }
+            }}
+          >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path
                 d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
                 fill="currentColor"
               />
             </svg>
-            {dict.auth.signIn.loginWithGoogle} ({dict.common.comingSoon})
+            {dict.auth.signIn.loginWithGoogle}
           </Button>
           <FieldDescription className="text-center">
             {dict.auth.signIn.dontHaveAccount}{' '}
