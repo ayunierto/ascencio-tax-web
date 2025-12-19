@@ -1,54 +1,49 @@
-"use client"
+'use client';
 
-import {
-  IconDots,
-  IconFolder,
-  IconShare3,
-  IconTrash,
-  type Icon,
-} from "@tabler/icons-react"
+import { type Icon } from '@tabler/icons-react';
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from '@/components/ui/sidebar';
+import Link from 'next/link';
 
-export function NavDocuments({
-  items,
-}: {
+interface SidebarNavGroupProps {
   items: {
-    name: string
-    url: string
-    icon: Icon
-  }[]
-}) {
-  const { isMobile } = useSidebar()
+    title: string;
+    url: string;
+    icon: Icon;
+  }[];
+  label?: string;
+  className?: string;
+}
+
+export function SidebarNavGroup({
+  items,
+  label,
+  className,
+}: SidebarNavGroupProps) {
+  const { isMobile } = useSidebar();
 
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Documents</SidebarGroupLabel>
+    <SidebarGroup
+      className={`group-data-[collapsible=icon]:hidden ${className}`}
+    >
+      {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
       <SidebarMenu>
         {items.map((item) => (
-          <SidebarMenuItem key={item.name}>
+          <SidebarMenuItem key={item.title}>
             <SidebarMenuButton asChild>
-              <a href={item.url}>
+              <Link href={item.url}>
                 <item.icon />
-                <span>{item.name}</span>
-              </a>
+                <span>{item.title}</span>
+              </Link>
             </SidebarMenuButton>
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction
                   showOnHover
@@ -60,8 +55,8 @@ export function NavDocuments({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="w-24 rounded-lg"
-                side={isMobile ? "bottom" : "right"}
-                align={isMobile ? "end" : "start"}
+                side={isMobile ? 'bottom' : 'right'}
+                align={isMobile ? 'end' : 'start'}
               >
                 <DropdownMenuItem>
                   <IconFolder />
@@ -77,16 +72,10 @@ export function NavDocuments({
                   <span>Delete</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
           </SidebarMenuItem>
         ))}
-        <SidebarMenuItem>
-          <SidebarMenuButton className="text-sidebar-foreground/70">
-            <IconDots className="text-sidebar-foreground/70" />
-            <span>More</span>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

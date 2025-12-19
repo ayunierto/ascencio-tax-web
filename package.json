@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node scripts/dev.js",
+    "dev": "next dev -p 4000",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
-    "@ascencio-tax/shared": "github:ayunierto/ascencio-tax-shared#main",
+    "@ascencio/shared": "github:ayunierto/ascencio-tax-shared#main",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/sortable": "^10.0.0",
@@ -35,7 +35,7 @@
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tabler/icons-react": "^3.36.0",
-    "@tanstack/react-query": "^5.90.10",
+    "@tanstack/react-query": "^5.90.12",
     "@tanstack/react-query-devtools": "^5.86.0",
     "@tanstack/react-table": "^8.21.3",
     "axios": "^1.11.0",

@@ -2,7 +2,6 @@
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Field,
   FieldDescription,
@@ -14,12 +13,14 @@ import { Input } from '@/components/ui/input';
 import type { Dictionary } from '@/lib/i18n/dictionaries';
 import { signIn } from '@/lib/actions/auth/signin';
 import OrContinueWith from './components/or-continue-witch';
+import { FormFieldError } from '@/components/ui/form-field-error';
 import Link from 'next/link';
-import { useMemo, useState, useTransition } from 'react';
-import z from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
+import { SigninDto, signinSchema } from '@ascencio/shared/schemas';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 interface SigninFormProps {
   dict: Dictionary;
@@ -33,21 +34,6 @@ export function SigninForm({
   ...props
 }: React.ComponentProps<'form'> & SigninFormProps) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [formError, setFormError] = useState<string | null>(null);
-
-  const signinSchema = useMemo(
-    () =>
-      z.object({
-        email: z.email({ message: dict.auth.common.errors.invalidEmail }),
-        password: z
-          .string()
-          .min(8, { message: dict.auth.common.errors.passwordMinLength }),
-      }),
-    [dict],
-  );
-
-  type SigninDto = z.infer<typeof signinSchema>;
 
   const form = useForm<SigninDto>({
     resolver: zodResolver(signinSchema),
@@ -57,18 +43,31 @@ export function SigninForm({
     },
   });
 
+  const mutation = useMutation({
+    mutationFn: signIn,
+  });
+
   const onSubmit = (data: SigninDto) => {
-    setFormError(null);
-    startTransition(async () => {
-      const result = await signIn(data);
-      if (!result.success) {
-        setFormError(
-          result.error || dict.auth.common.errors.invalidCredentials,
+    mutation.mutateAsync(data, {
+      onSuccess: async () => {
+        toast.success(dict.signInSuccess, {
+          description: dict.signInSuccessDescription,
+        });
+
+        setTimeout(() => {
+          console.log('Retrasado por 1 segundo.');
+          router.push(`/${lang}`);
+          router.refresh();
+        }, 1000);
+      },
+      onError(error, variables, onMutateResult, context) {
+        console.log('Error during sign-in:', error);
+        toast.error(
+          typeof error === 'string'
+            ? error
+            : 'Error signing in. Please try again.',
         );
-        return;
-      }
-      router.push(`/${lang}`);
-      router.refresh();
+      },
     });
   };
 
@@ -80,9 +79,9 @@ export function SigninForm({
     >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">{dict.auth.signIn.title}</h1>
+          <h1 className="text-2xl font-bold">{dict.signInScreenTitle}</h1>
           <p className="text-muted-foreground text-sm text-balance">
-            {dict.auth.signIn.subtitle}
+            {dict.signInScreenSubtitle}
           </p>
         </div>
 
@@ -91,16 +90,18 @@ export function SigninForm({
           name="email"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel htmlFor="email">{dict.auth.common.email}</FieldLabel>
+              <FieldLabel htmlFor="email">{dict.email}</FieldLabel>
               <Input
                 {...field}
                 id="email"
                 type="email"
-                placeholder={dict.auth.common.emailPlaceholder}
+                placeholder={dict['emailPlaceholder']}
                 required
-                pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+                // pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
               />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && (
+                <FormFieldError dict={dict} error={fieldState.error} />
+              )}
             </Field>
           )}
         />
@@ -111,37 +112,29 @@ export function SigninForm({
           render={({ field, fieldState }) => (
             <Field>
               <div className="flex items-center">
-                <FieldLabel htmlFor="password">
-                  {dict.auth.common.password}
-                </FieldLabel>
+                <FieldLabel htmlFor="password">{dict.password}</FieldLabel>
                 <Link
                   href={`/${lang}/forgot-password`}
                   className="ml-auto text-sm underline-offset-4 hover:underline"
                 >
-                  {dict.auth.signIn.forgotPassword}
+                  {dict.forgotPassword}
                 </Link>
               </div>
               <Input {...field} id="password" type="password" required />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && (
+                <FormFieldError dict={dict} error={fieldState.error} />
+              )}
             </Field>
           )}
         />
 
-        {formError && (
-          <Alert variant="destructive">
-            <AlertDescription>
-              <p>{formError}</p>
-            </AlertDescription>
-          </Alert>
-        )}
-
         <Field>
-          <Button type="submit" disabled={isPending}>
-            {dict.auth.signIn.signIn}
+          <Button type="submit" disabled={mutation.isPending}>
+            {dict.signIn}
           </Button>
         </Field>
 
-        <OrContinueWith text={dict.auth.common.orContinueWith} />
+        <OrContinueWith text={dict.orContinueWith} />
 
         <Field>
           <Button
@@ -167,12 +160,12 @@ export function SigninForm({
                 fill="currentColor"
               />
             </svg>
-            {dict.auth.signIn.loginWithGoogle}
+            {dict.signInWithGoogle}
           </Button>
           <FieldDescription className="text-center">
-            {dict.auth.signIn.dontHaveAccount}{' '}
+            {dict.dontHaveAccount}{' '}
             <Link href="/signup" className="underline underline-offset-4">
-              {dict.auth.signUp.signUp}
+              {dict.signUp}
             </Link>
           </FieldDescription>
         </Field>

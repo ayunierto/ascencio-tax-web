@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     ],
   },
   // Transpile the local shared package so Next can handle its TypeScript sources
-  transpilePackages: ['@ascencio-tax/shared'],
+  transpilePackages: ['@ascencio/shared'],
 };
 
 export default nextConfig;

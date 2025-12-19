@@ -1,8 +1,13 @@
-"use client";
+'use client';
 
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import {
+  IconCreditCard,
+  IconDotsVertical,
+  IconNotification,
+  IconUserCircle,
+} from '@tabler/icons-react';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,36 +16,45 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { useAuthStore } from "@/auth/store/useAuthStore";
-import { toast } from "sonner";
-import { useNavigate } from "react-router";
+} from '@/components/ui/sidebar';
+import { LogOut } from 'lucide-react';
+import { signOut } from '@/lib/actions/auth/signout';
+import { useRouter } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { Dictionary } from '@/lib/i18n/dictionaries';
 
 interface NavUserProps {
-  user: { name: string; email: string; avatar: string };
+  user: {
+    name: string;
+    email: string;
+    avatar?: string;
+  };
+  dict: Dictionary;
 }
 
-export function NavUser({ user }: NavUserProps) {
+export function NavUser({ user, dict }: NavUserProps) {
   const { isMobile } = useSidebar();
-  const { logout } = useAuthStore();
-  const navigate = useNavigate();
+  const router = useRouter();
 
-  const handleLogout = async () => {
-    await logout();
+  const signOutMutation = useMutation({
+    mutationFn: signOut,
+  });
 
-    toast.success("Logged out successfully", {
-      duration: 3000,
-      description: "You have been logged out.",
+  const handleSignOut = async () => {
+    signOutMutation.mutateAsync(undefined, {
+      onSuccess: () => {
+        toast.success(dict.signOutSuccess);
+        router.push('/signin');
+        router.refresh();
+      },
     });
-
-    navigate("/");
-    return;
   };
 
   return (
@@ -52,22 +66,24 @@ export function NavUser({ user }: NavUserProps) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
+              <Avatar className="h-8 w-8 rounded-lg grayscale">
+                <AvatarImage src={user.avatar} alt={user.name} />
                 <AvatarFallback className="rounded-lg">
-                  {user.name.charAt(0).toUpperCase()}
+                  {user.name.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="text-muted-foreground truncate text-xs">
+                  {user.email}
+                </span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <IconDotsVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            side={isMobile ? 'bottom' : 'right'}
             align="end"
             sideOffset={4}
           >
@@ -79,34 +95,29 @@ export function NavUser({ user }: NavUserProps) {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="text-muted-foreground truncate text-xs">
+                    {user.email}
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            {/* <DropdownMenuSeparator /> */}
-            {/* <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup> */}
-            {/* <DropdownMenuSeparator /> */}
+            <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              {/* <DropdownMenuItem>
-                <BadgeCheck />
+              <DropdownMenuItem disabled>
+                <IconUserCircle />
                 Account
-              </DropdownMenuItem> */}
-              {/* <DropdownMenuItem>
-                <CreditCard />
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled>
+                <IconCreditCard />
                 Billing
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
+              <DropdownMenuItem disabled>
+                <IconNotification />
                 Notifications
-              </DropdownMenuItem> */}
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem onClick={handleSignOut}>
               <LogOut />
               Log out
             </DropdownMenuItem>

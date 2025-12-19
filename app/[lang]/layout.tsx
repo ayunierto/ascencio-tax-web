@@ -1,24 +1,14 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
 import { QueryProvider } from '@/lib/providers/query-provider';
 import { ThemeProvider } from '@/components/theme-provider';
-
+import { geistMono, geistSans } from '@/lib/config/fonts';
 import '../../globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
-
 export const metadata: Metadata = {
-  title: 'Ascencio Tax Inc - Admin Portal',
-  description: 'Administration portal for Ascencio Tax Inc services',
+  title: 'Ascencio Tax Inc.',
+  description:
+    'Ascencio Tax Inc. - Your Trusted Partner for Expert Tax Services',
 };
 
 export default async function RootLayout({
@@ -39,7 +29,7 @@ export default async function RootLayout({
           <QueryProvider>{children}</QueryProvider>
         </ThemeProvider>
 
-        <Toaster />
+        <Toaster position="top-right" />
       </body>
     </html>
   );

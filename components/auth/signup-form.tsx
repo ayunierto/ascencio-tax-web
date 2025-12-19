@@ -13,7 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { SignUpDto, signUpSchema } from '@ascencio-tax/shared/src/schemas';
+import { SignUpDto, signUpSchema } from '@ascencio/shared/src/schemas';
 import Link from 'next/link';
 import OrContinueWith from './components/or-continue-witch';
 
