@@ -60,7 +60,7 @@ export function SigninForm({
           router.refresh();
         }, 1000);
       },
-      onError(error, variables, onMutateResult, context) {
+      onError(error) {
         console.log('Error during sign-in:', error);
         toast.error(
           typeof error === 'string'

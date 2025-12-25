@@ -1,15 +1,22 @@
 {
+  "validationRequired": "This field is required.",
+  "validationInvalidFormat": "The format of this field is invalid.",
+  "validationMinLength": "This field must be at least {min} characters long.",
+  "validationMaxLength": "This field must be at most {max} characters long.",
+  "validationEmail": "Please enter a valid email address.",
+  "validationNumber": "This field must be a valid number.",
+  "validationMinValue": "This field must be at least {min}.",
+  "validationMaxValue": "This field must be at most {max}.",
+  "validationMustMatch": "This field must match {field}.",
+  "validationUrl": "URL must be a valid URL.",
+
   "signUpScreenTitle": "Create Your Account",
   "signUpScreenSubtitle": "Fill in the form below to create your account",
   "firstName": "First Name",
   "firstNamePlaceholder": "John",
-  "firstNameRequired": "First name is required and must be at least 3 characters long.",
   "lastName": "Last Name",
   "lastNamePlaceholder": "Doe",
-  "lastNameRequired": "Last name is required and must be at least 3 characters long.",
   "confirmPassword": "Confirm Password",
-  "passwordRequired": "Must be at least 8 characters long.",
-  "timezoneRequired": "Time zone is required.",
   "createAccount": "Create Account",
   "signUp": "Sign up",
   "signUpWithApple": "Sign up with Apple",
@@ -26,6 +33,8 @@
   "signInWithApple": "Login with Apple",
   "signInWithGoogle": "Login with Google",
   "signInWithMeta": "Login with Meta",
+  "signInSuccess": "Welcome Back!",
+  "signInSuccessDescription": "You have successfully logged into your account.",
 
   "signOutSuccess": "Signed out successfully.",
 
@@ -36,12 +45,9 @@
   "verify": "Verify",
   "didntReceiveCode": "Didn't receive the code?",
   "resend": "Resend",
-  "requiredCode": "Verification code is required.",
   "invalidCode": "The verification code is invalid.",
-  "lengthCode": "The verification code must be 6 digits long.",
   "googleProfileMissingEmail": "Google profile is missing an email address.",
   "codeLength": "Code must be 6 digits long.",
-  "codeRequired": "Code is required.",
   "internalServerError": "Internal server error. Please try again later.",
   "userNotFound": "User not found.",
   "invalidCurrentPassword": "The current password is incorrect.",
@@ -60,13 +66,11 @@
   "newPasswordPlaceholder": "New password",
 
   "email": "Email",
-  "emailRequired": "Email is required.",
   "password": "Password",
   "agreeToTerms": "By clicking continue, you agree to our",
   "termsOfService": "Terms of Service",
   "privacyPolicy": "Privacy Policy",
   "orContinueWith": "Or continue with",
-  "invalidEmail": "Please enter a valid email address.",
   "invalidCredentials": "Invalid email or password.",
   "accountLocked": "Your account has been locked. Please contact support.",
   "emailNotVerified": "Your email address has not been verified. Please check your email for the verification code.",
@@ -75,7 +79,6 @@
   "verificationEmailResent": "Verification email resent successfully. Please check your inbox.",
   "resetCodeSent": "If this email is registered, a reset code has been sent.",
   "resetPasswordEmailSent": "Reset password email sent successfully. Please check your inbox.",
-
   "emailAlreadyExists": "Account Already Exists",
   "emailAlreadyExistsDescription": "It looks like you already have an account with this email. Please log in instead.",
   "emailAlreadyExistsHint": "Click the button above to go to the login page",
@@ -83,9 +86,6 @@
 
   "accountCreated": "Welcome! Account Created",
   "accountCreatedDescription": "We noticed this is your first time here. Your account has been created successfully!",
-
-  "signInSuccess": "Welcome Back!",
-  "signInSuccessDescription": "You have successfully logged into your account.",
 
   "and": "and",
   "loading": "Loading...",
@@ -124,69 +124,5 @@
   "ShortMonthSep": "Sep",
   "ShortMonthOct": "Oct",
   "ShortMonthNov": "Nov",
-  "ShortMonthDec": "Dec",
-
-  "merchantRequired": "Merchant is required.",
-  "dateInvalid": "Date is required and must be a valid ISO datetime.",
-  "totalInvalid": "Total must be a valid number with two decimal places.",
-  "taxInvalid": "Tax must be a valid number with two decimal places.",
-  "imageUrlInvalid": "Image URL must be a valid URL.",
-  "categoryIdRequired": "Category is required.",
-  "subcategoryIdInvalid": "Subcategory ID must be a valid UUID.",
-  "reportStartRequired": "Report start date is required.",
-  "reportEndRequired": "Report end date is required.",
-  "expenseIdRequired": "Expense ID is required.",
-
-  "serviceIdRequired": "Service is required.",
-  "staffIdRequired": "Staff is required.",
-  "startRequired": "Start datetime is required.",
-  "endRequired": "End datetime is required.",
-  "cancellationReasonRequired": "Cancellation reason is required.",
-  "dayOfWeekInvalid": "Day of week must be an integer between 0 and 6.",
-  "startTimeInvalid": "Start time must be in HH:mm format.",
-  "endTimeInvalid": "End time must be in HH:mm format.",
-  "dateRequired": "Date is required.",
-
-  "serviceNameRequired": "Service name is required and must be at least 3 characters.",
-  "durationInvalid": "Duration must be an integer number of minutes.",
-  "staffIdsRequired": "At least one staff member must be assigned.",
-  "staffIdInvalid": "Staff ID must be a valid UUID.",
-  "availableOnlineRequired": "Availability flag is required.",
-  "activeFlagRequired": "Active flag is required.",
-
-  "passwordMinLength": "Password must be at least 6 characters.",
-  "passwordMaxLength": "Password must be at most 100 characters.",
-  "confirmPasswordRequired": "Please confirm your password.",
-
-  "titleRequired": "Title is required.",
-  "urlInvalid": "URL must be a valid URL.",
-
-  "descriptionRequired": "Description is required.",
-
-  "platformRequired": "Platform is required (IOS, ANDROID, WEB).",
-  "minSupportedRequired": "Minimum supported version is required.",
-  "latestRequired": "Latest version is required.",
-  "forceUpdateRequired": "Force update flag is required.",
-
-  "clientNameRequired": "Client name is required.",
-  "clientEmailInvalid": "Client email must be a valid email address.",
-  "clientPhoneRequired": "Client phone number is required.",
-  "staffNameRequired": "Staff name is required.",
-  "appointmentDateRequired": "Appointment date is required.",
-  "appointmentTimeRequired": "Appointment time is required.",
-  "locationRequired": "Location is required.",
-  "meetingLinkInvalid": "Meeting link must be a valid URL.",
-
-  "settingKeyRequired": "Setting key is required.",
-  "settingValueRequired": "Setting value is required.",
-  "settingTypeRequired": "Setting type is required.",
-
-  "topicRequired": "Meeting topic is required.",
-  "typeInvalid": "Meeting type is invalid.",
-
-  "categoryNameRequired": "Category name is required.",
-
-  "staffFirstNameRequired": "First name is required and must be at least 3 characters.",
-  "staffLastNameRequired": "Last name is required and must be at least 3 characters.",
-  "staffIsActiveRequired": "Active flag is required."
+  "ShortMonthDec": "Dec"
 }
