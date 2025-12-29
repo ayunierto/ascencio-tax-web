@@ -112,6 +112,10 @@
   "user": "User",
   "client": "Client",
   "comingSoon": "Coming Soon",
+  "create": "Create",
+  "update": "Update",
+  "saving": "Saving...",
+  "updating": "Updating...",
 
   "ShortMonthJan": "Jan",
   "ShortMonthFeb": "Feb",

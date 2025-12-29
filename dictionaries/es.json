@@ -108,6 +108,10 @@
   "user": "Usuario",
   "client": "Cliente",
   "comingSoon": "Próximamente",
+  "create": "Crear",
+  "update": "Actualizar",
+  "saving": "Guardando...",
+  "updating": "Actualizando...",
 
   "ShortMonthJan": "Ene",
   "ShortMonthFeb": "Feb",
