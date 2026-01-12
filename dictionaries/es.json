@@ -124,5 +124,7 @@
   "ShortMonthSep": "Sep",
   "ShortMonthOct": "Oct",
   "ShortMonthNov": "Nov",
-  "ShortMonthDec": "Dic"
+  "ShortMonthDec": "Dic",
+
+  "notFound": "{resource} no encontrado."
 }
