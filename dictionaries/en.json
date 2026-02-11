@@ -24,8 +24,9 @@
   "alreadyHaveAccount": "Already have an account?",
   "signUpWithMeta": "Sign up with Meta",
   "signUpSuccess": "Account created successfully! Please check your email to verify your account.",
+  "phoneNumber": "Phone Number",
 
-  "signInScreenTitle": "Welcome Back",
+  "signInScreenTitle": "Sign in to your account",
   "signInScreenSubtitle": "Sign in to access your account",
   "forgotPassword": "Forgot your password?",
   "dontHaveAccount": "Don't have an account?",
@@ -33,7 +34,7 @@
   "signInWithApple": "Login with Apple",
   "signInWithGoogle": "Login with Google",
   "signInWithMeta": "Login with Meta",
-  "signInSuccess": "Welcome Back!",
+  "signInSuccess": "Sign in successful!",
   "signInSuccessDescription": "You have successfully logged into your account.",
 
   "signOutSuccess": "Signed out successfully.",

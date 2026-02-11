@@ -80,6 +80,7 @@
   "emailAlreadyExistsDescription": "Parece que ya tienes una cuenta con este correo electrónico. Por favor, inicia sesión en su lugar.",
   "emailAlreadyExistsHint": "Haz clic en el botón de arriba para ir a la página de inicio de sesión",
   "codeExpired": "El código de verificación ha expirado. Se ha enviado un nuevo código a tu correo electrónico.",
+  "phoneNumber": "Número de teléfono",
 
   "accountCreated": "¡Bienvenido! Cuenta creada",
   "accountCreatedDescription": "¡Notamos que es tu primera vez aquí. Tu cuenta ha sido creada con éxito!",
