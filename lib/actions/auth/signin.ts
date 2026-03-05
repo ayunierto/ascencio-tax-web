@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { api } from '@/lib/api/api';
-import { SigninDto } from '@ascencio/shared';
+import type { SignInRequest } from '@ascencio/shared/schemas';
 
 interface SignInResponse {
   access_token: string;
@@ -14,7 +14,9 @@ interface SignInResponse {
   };
 }
 
-export async function signIn(credentials: SigninDto): Promise<SignInResponse> {
+export async function signIn(
+  credentials: SignInRequest,
+): Promise<SignInResponse> {
   const { data } = await api.post<SignInResponse>('/auth/signin', credentials);
 
   const cookieStore = await cookies();

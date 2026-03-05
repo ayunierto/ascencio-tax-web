@@ -39,12 +39,12 @@ export function ResetPasswordForm({
       z.object({
         otp: z
           .string()
-          .length(6, dict.auth.otp.errors.length)
-          .nonempty(dict.auth.otp.errors.required),
+          .length(6, dict.codeLength)
+          .min(1, dict.validationRequired),
         newPassword: z
           .string()
-          .min(8, dict.auth.common.errors.passwordMinLength)
-          .nonempty(dict.auth.common.errors.required),
+          .min(8, dict.validationMinLength.replace('{min}', '8'))
+          .min(1, dict.validationRequired),
       }),
 
     [dict],
@@ -69,10 +69,10 @@ export function ResetPasswordForm({
         <FieldGroup>
           <div className="flex flex-col items-center gap-1 text-center">
             <h1 className="text-2xl font-bold">
-              {dict.auth.resetPassword.title}
+              {dict.resetPasswordScreenTitle}
             </h1>
             <p className="text-muted-foreground text-sm">
-              {dict.auth.resetPassword.subtitle}
+              {dict.resetPasswordScreenSubtitle}
             </p>
           </div>
           <Controller
@@ -81,7 +81,7 @@ export function ResetPasswordForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="otp" className="sr-only">
-                  {dict.auth.otp.title}
+                  {dict.verificationCode}
                 </FieldLabel>
 
                 <InputOTP {...field} maxLength={6} id="otp" required>
@@ -106,7 +106,7 @@ export function ResetPasswordForm({
                 )}
 
                 <FieldDescription className="text-center">
-                  {dict.auth.otp.otpDescription}
+                  {dict.otpScreenDescription}
                 </FieldDescription>
               </Field>
             )}
@@ -118,13 +118,13 @@ export function ResetPasswordForm({
             render={({ field, fieldState }) => (
               <Field className="mt-4" data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="newPassword">
-                  {dict.auth.resetPassword.newPassword}
+                  {dict.newPassword}
                 </FieldLabel>
                 <Input
                   {...field}
                   type="password"
                   id="newPassword"
-                  placeholder={dict.auth.resetPassword.newPasswordPlaceholder}
+                  placeholder={dict.newPasswordPlaceholder}
                   required
                 />
                 {fieldState.invalid && (
@@ -134,12 +134,10 @@ export function ResetPasswordForm({
             )}
           />
 
-          <Button type="submit">{dict.auth.otp.verify}</Button>
+          <Button type="submit">{dict.verify}</Button>
           <FieldDescription className="text-center">
-            {dict.auth.otp.didntReceiveCode}{' '}
-            <Link href={`/${lang}/forgot-password`}>
-              {dict.auth.otp.resend}
-            </Link>
+            {dict.didntReceiveCode}{' '}
+            <Link href={`/${lang}/forgot-password`}>{dict.resend}</Link>
           </FieldDescription>
         </FieldGroup>
       </form>

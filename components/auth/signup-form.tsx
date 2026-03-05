@@ -13,9 +13,24 @@ import {
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { SignUpDto, signUpSchema } from '@ascencio/shared/src/schemas';
+import { signUpSchema } from '@ascencio/shared/schemas';
 import Link from 'next/link';
 import OrContinueWith from './components/or-continue-witch';
+import { z } from 'zod';
+
+// Extend the schema to include confirmPassword for frontend validation
+const signUpFormSchema = signUpSchema
+  .extend({
+    confirmPassword: z
+      .string()
+      .min(8, 'Password must be at least 8 characters'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
+type SignUpFormData = z.infer<typeof signUpFormSchema>;
 
 interface SignupFormProps {
   dict: any;
@@ -28,8 +43,8 @@ export function SignupForm({
   dict,
   ...props
 }: React.ComponentProps<'form'> & SignupFormProps) {
-  const form = useForm<SignUpDto>({
-    resolver: zodResolver(signUpSchema),
+  const form = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpFormSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -43,7 +58,7 @@ export function SignupForm({
     },
   });
 
-  function onSubmit(data: SignUpDto) {
+  function onSubmit(data: SignUpFormData) {
     // Do something with the form values.
     console.log(data);
   }
@@ -56,9 +71,9 @@ export function SignupForm({
     >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">{dict.auth.signUp.title}</h1>
+          <h1 className="text-2xl font-bold">{dict.signUpScreenTitle}</h1>
           <p className="text-muted-foreground text-sm text-balance">
-            {dict.auth.signUp.subtitle}
+            {dict.signUpScreenSubtitle}
           </p>
         </div>
 
@@ -67,14 +82,12 @@ export function SignupForm({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="firstName">
-                {dict.auth.signUp.firstName}
-              </FieldLabel>
+              <FieldLabel htmlFor="firstName">{dict.firstName}</FieldLabel>
               <Input
                 {...field}
                 id="firstName"
                 aria-invalid={fieldState.invalid}
-                placeholder={dict.auth.signUp.firstNamePlaceholder}
+                placeholder={dict.firstNamePlaceholder}
                 autoComplete="off"
                 required
                 minLength={3}
@@ -89,14 +102,12 @@ export function SignupForm({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="lastName">
-                {dict.auth.signUp.lastName}
-              </FieldLabel>
+              <FieldLabel htmlFor="lastName">{dict.lastName}</FieldLabel>
               <Input
                 {...field}
                 id="lastName"
                 aria-invalid={fieldState.invalid}
-                placeholder={dict.auth.signUp.lastNamePlaceholder}
+                placeholder={dict.lastNamePlaceholder}
                 autoComplete="off"
                 required
                 minLength={3}
@@ -111,12 +122,12 @@ export function SignupForm({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="email">{dict.auth.common.email}</FieldLabel>
+              <FieldLabel htmlFor="email">{dict.email}</FieldLabel>
               <Input
                 {...field}
                 id="email"
                 type="email"
-                placeholder={dict.auth.common.emailPlaceholder}
+                placeholder={dict.emailPlaceholder}
                 required
               />
             </Field>
@@ -128,14 +139,12 @@ export function SignupForm({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="password">
-                {dict.auth.common.password}
-              </FieldLabel>
+              <FieldLabel htmlFor="password">{dict.password}</FieldLabel>
               <Input
                 {...field}
                 id="password"
                 type="password"
-                placeholder={dict.auth.common.passwordPlaceholder}
+                placeholder="********"
                 minLength={8}
                 required
               />
@@ -150,30 +159,30 @@ export function SignupForm({
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="confirmPassword">
-                {dict.auth.signUp.confirmPassword}
+                {dict.confirmPassword}
               </FieldLabel>
               <Input
                 {...field}
                 id="confirmPassword"
                 type="password"
-                placeholder={dict.auth.signUp.confirmPasswordPlaceholder}
+                placeholder="********"
                 required
                 minLength={8}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
 
               <FieldDescription>
-                {dict.auth.signUp.confirmPasswordDescription}
+                Password must be at least 8 characters
               </FieldDescription>
             </Field>
           )}
         />
 
         <Field>
-          <Button type="submit">{dict.auth.signUp.createAccount}</Button>
+          <Button type="submit">{dict.createAccount}</Button>
         </Field>
 
-        <OrContinueWith text={dict.auth.common.orContinueWith} />
+        <OrContinueWith text={dict.orContinueWith} />
 
         <Field>
           <Button variant="outline" type="button" disabled>
@@ -183,11 +192,11 @@ export function SignupForm({
                 fill="currentColor"
               />
             </svg>
-            {dict.auth.signUp.signUpWithGoogle} ({dict.common.comingSoon})
+            {dict.signUpWithGoogle} ({dict.comingSoon})
           </Button>
           <FieldDescription className="px-6 text-center">
-            {dict.auth.signUp.alreadyHaveAccount}{' '}
-            <Link href={`/signin`}>{dict.auth.signIn.signIn}</Link>
+            {dict.alreadyHaveAccount}{' '}
+            <Link href={`/signin`}>{dict.signIn}</Link>
           </FieldDescription>
         </Field>
       </FieldGroup>

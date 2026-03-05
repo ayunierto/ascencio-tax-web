@@ -18,7 +18,7 @@ import Link from 'next/link';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { SigninDto, signinSchema } from '@ascencio/shared/schemas';
+import { SignInRequest, signInSchema } from '@ascencio/shared/schemas';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -35,8 +35,8 @@ export function SigninForm({
 }: React.ComponentProps<'form'> & SigninFormProps) {
   const router = useRouter();
 
-  const form = useForm<SigninDto>({
-    resolver: zodResolver(signinSchema),
+  const form = useForm<SignInRequest>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -47,7 +47,7 @@ export function SigninForm({
     mutationFn: signIn,
   });
 
-  const onSubmit = (data: SigninDto) => {
+  const onSubmit = (data: SignInRequest) => {
     mutation.mutateAsync(data, {
       onSuccess: async () => {
         toast.success(dict.signInSuccess, {

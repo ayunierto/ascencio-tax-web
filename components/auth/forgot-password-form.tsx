@@ -29,7 +29,7 @@ export function ForgotPasswordForm({
   const forgotPasswordSchema = useMemo(
     () =>
       z.object({
-        email: z.email({ message: dict.auth.common.errors.invalidEmail }),
+        email: z.string().email({ message: dict.validationEmail }),
       }),
     [dict],
   );
@@ -56,10 +56,10 @@ export function ForgotPasswordForm({
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">
-            {dict.auth.forgotPassword.title}
+            {dict.forgotPasswordScreenTitle}
           </h1>
           <p className="text-muted-foreground text-sm text-balance">
-            {dict.auth.forgotPassword.subtitle}
+            {dict.forgotPasswordScreenSubtitle}
           </p>
         </div>
 
@@ -68,12 +68,12 @@ export function ForgotPasswordForm({
           name="email"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel htmlFor="email">{dict.auth.common.email}</FieldLabel>
+              <FieldLabel htmlFor="email">{dict.email}</FieldLabel>
               <Input
                 {...field}
                 id="email"
                 type="email"
-                placeholder={dict.auth.common.emailPlaceholder}
+                placeholder={dict.emailPlaceholder}
                 required
                 pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
               />
@@ -83,7 +83,7 @@ export function ForgotPasswordForm({
         />
 
         <Field>
-          <Button type="submit">{dict.auth.forgotPassword.title}</Button>
+          <Button type="submit">{dict.resetPassword}</Button>
         </Field>
       </FieldGroup>
     </form>

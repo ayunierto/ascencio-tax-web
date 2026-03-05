@@ -22,7 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ServicesListResponse } from '@ascencio/shared';
+import type { Service, PaginatedResponse } from '@ascencio/shared';
 import {
   EditIcon,
   EyeOff,
@@ -33,7 +33,7 @@ import {
 import { IconCircleCheckFilled } from '@tabler/icons-react';
 
 interface ServicesTableProps {
-  services: ServicesListResponse;
+  services: PaginatedResponse<Service>;
 }
 
 const ServicesTable: React.FC<ServicesTableProps> = ({ services }) => {
@@ -54,7 +54,7 @@ const ServicesTable: React.FC<ServicesTableProps> = ({ services }) => {
         </TableHeader>
         <TableBody>
           {services &&
-            services.services.map((service) => (
+            services.items.map((service) => (
               <TableRow key={service.id}>
                 <TableCell>
                   <img

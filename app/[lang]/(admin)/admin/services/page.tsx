@@ -21,7 +21,7 @@ const ServicesPage = async () => {
 
   return (
     <div className="px-4">
-      <h1>Services: {services.count}</h1>
+      <h1>Services: {services.total}</h1>
 
       <ServicesTable services={services} />
     </div>

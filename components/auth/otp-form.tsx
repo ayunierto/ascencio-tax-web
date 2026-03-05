@@ -37,8 +37,8 @@ export function OTPForm({
       z.object({
         otp: z
           .string()
-          .length(6, dict.auth.otp.errors.length)
-          .nonempty(dict.auth.otp.errors.required),
+          .length(6, dict.codeLength)
+          .min(1, dict.validationRequired),
       }),
     [dict],
   );
@@ -60,9 +60,9 @@ export function OTPForm({
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
           <div className="flex flex-col items-center gap-1 text-center">
-            <h1 className="text-2xl font-bold">{dict.auth.otp.title}</h1>
+            <h1 className="text-2xl font-bold">{dict.otpScreenTitle}</h1>
             <p className="text-muted-foreground text-sm text-balance">
-              {dict.auth.otp.subtitle}
+              {dict.otpScreenSubtitle}
             </p>
           </div>
           <Controller
@@ -71,7 +71,7 @@ export function OTPForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="otp" className="sr-only">
-                  {dict.auth.otp.title}
+                  {dict.verificationCode}
                 </FieldLabel>
 
                 <InputOTP {...field} maxLength={6} id="otp" required>
@@ -96,15 +96,14 @@ export function OTPForm({
                 )}
 
                 <FieldDescription className="text-center">
-                  {dict.auth.otp.otpDescription}
+                  {dict.otpScreenDescription}
                 </FieldDescription>
               </Field>
             )}
           />
-          <Button type="submit">{dict.auth.otp.verify}</Button>
+          <Button type="submit">{dict.verify}</Button>
           <FieldDescription className="text-center">
-            {dict.auth.otp.didntReceiveCode}{' '}
-            <a href="#">{dict.auth.otp.resend}</a>
+            {dict.didntReceiveCode} <a href="#">{dict.resend}</a>
           </FieldDescription>
         </FieldGroup>
       </form>

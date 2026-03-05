@@ -2,7 +2,7 @@
 
 import { api } from '@/lib/api/api';
 import { authHeaders } from '@/lib/api/withAuth';
-import type { Service, ServicesListResponse } from '@ascencio/shared';
+import type { Service, PaginatedResponse } from '@ascencio/shared';
 
 export interface ServiceDto {
   id?: string;
@@ -23,9 +23,9 @@ export interface Pagination {
 
 export async function getServices(
   params: Pagination = {},
-): Promise<ServicesListResponse> {
+): Promise<PaginatedResponse<Service>> {
   const headers = await authHeaders();
-  const res = await api.get<ServicesListResponse>('/services', {
+  const res = await api.get<PaginatedResponse<Service>>('/services', {
     params,
     headers,
     withCredentials: true,
