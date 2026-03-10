@@ -4,8 +4,17 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Calendar, Clock, MapPin, Video, XCircle } from 'lucide-react';
 import type { Appointment } from '@ascencio/shared/interfaces';
-import { getCurrentUserAppointments, cancelAppointment } from '@/lib/actions/appointments';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  getCurrentUserAppointments,
+  cancelAppointment,
+} from '@/lib/actions/appointments';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -23,12 +32,15 @@ import {
 
 export function AppointmentsList() {
   const router = useRouter();
-  const [pendingAppointments, setPendingAppointments] = useState<Appointment[]>([]);
+  const [pendingAppointments, setPendingAppointments] = useState<Appointment[]>(
+    [],
+  );
   const [pastAppointments, setPastAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancelingId, setCancelingId] = useState<string | null>(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
 
   // Cargar citas pendientes y pasadas
   useEffect(() => {
@@ -113,9 +125,12 @@ export function AppointmentsList() {
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
-            <CardTitle className="text-xl">{appointment.service?.name}</CardTitle>
+            <CardTitle className="text-xl">
+              {appointment.service?.name}
+            </CardTitle>
             <CardDescription className="mt-1">
-              with {appointment.staffMember?.firstName} {appointment.staffMember?.lastName}
+              with {appointment.staffMember?.firstName}{' '}
+              {appointment.staffMember?.lastName}
             </CardDescription>
           </div>
           {getStatusBadge(appointment.status)}
@@ -166,17 +181,21 @@ export function AppointmentsList() {
                 disabled={cancelingId === appointment.id}
               >
                 <XCircle className="h-4 w-4 mr-2" />
-                {cancelingId === appointment.id ? 'Cancelling...' : 'Cancel Appointment'}
+                {cancelingId === appointment.id
+                  ? 'Cancelling...'
+                  : 'Cancel Appointment'}
               </Button>
             </div>
           )}
-          {appointment.status === 'cancelled' && appointment.cancellationReason && (
-            <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-800">
-                <strong>Cancellation reason:</strong> {appointment.cancellationReason}
-              </p>
-            </div>
-          )}
+          {appointment.status === 'cancelled' &&
+            appointment.cancellationReason && (
+              <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-sm text-red-800">
+                  <strong>Cancellation reason:</strong>{' '}
+                  {appointment.cancellationReason}
+                </p>
+              </div>
+            )}
         </div>
       </CardContent>
     </Card>
@@ -208,7 +227,9 @@ export function AppointmentsList() {
               <CardContent className="pt-6">
                 <div className="text-center py-12">
                   <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No upcoming appointments</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    No upcoming appointments
+                  </h3>
                   <p className="text-muted-foreground mb-4">
                     You don't have any scheduled appointments yet.
                   </p>
@@ -231,7 +252,9 @@ export function AppointmentsList() {
               <CardContent className="pt-6">
                 <div className="text-center py-12">
                   <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No past appointments</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    No past appointments
+                  </h3>
                   <p className="text-muted-foreground">
                     Your appointment history will appear here.
                   </p>
@@ -251,7 +274,8 @@ export function AppointmentsList() {
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel Appointment</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to cancel this appointment? This action cannot be undone.
+              Are you sure you want to cancel this appointment? This action
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

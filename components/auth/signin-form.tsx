@@ -147,7 +147,7 @@ export function SigninForm({
                   'http://localhost:3001/api/v1';
                 const u = new URL(base);
                 const apiBasePath = u.pathname.replace(/\/$/, '');
-                const oauthUrl = `${u.origin}${apiBasePath}/auth/google`;
+                const oauthUrl = `${u.origin}${apiBasePath}/auth/google/web`;
                 window.location.href = oauthUrl;
               } catch (e) {
                 console.error('Invalid NEXT_PUBLIC_API_URL', e);
