@@ -14,7 +14,7 @@ export const resolveFieldErrorMessage = (
   message?: unknown,
   fallback = DEFAULT_ERROR_FALLBACK,
 ): string | undefined => {
-  if (!message) return fallback;
+  if (!message) return undefined;
   if (typeof message === 'string') {
     const key = message as keyof Dictionary;
     return (dict as Record<string, string>)[key] ?? message;
@@ -37,6 +37,8 @@ export function FormFieldError({
   fallback = DEFAULT_ERROR_FALLBACK,
   ...props
 }: FormFieldErrorProps) {
+  if (!error) return null;
+
   const message = resolveFieldErrorMessage(dict, error?.message, fallback);
 
   if (!message) return null;

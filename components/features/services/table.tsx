@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,14 +31,32 @@ import {
   Trash2Icon,
   VideoIcon,
   VideoOff,
+  LoaderIcon,
 } from 'lucide-react';
 import { IconCircleCheckFilled } from '@tabler/icons-react';
+import { deleteService } from '@/lib/actions/services';
 
 interface ServicesTableProps {
   services: PaginatedResponse<Service>;
 }
 
 const ServicesTable: React.FC<ServicesTableProps> = ({ services }) => {
+  const router = useRouter();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const handleDelete = async (id: string) => {
+    setDeletingId(id);
+    try {
+      await deleteService(id);
+      router.refresh();
+    } catch (error) {
+      console.error('Error deleting service:', error);
+      alert('Failed to delete service');
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   return (
     <div className="overflow-hidden border rounded-lg">
       <Table className="overflow-hidden border rounded-lg">
@@ -64,7 +84,7 @@ const ServicesTable: React.FC<ServicesTableProps> = ({ services }) => {
                   />
                 </TableCell>
                 <TableCell>{service.name}</TableCell>
-                <TableCell>{service.durationMinutes}</TableCell>
+                <TableCell>{service.durationMinutes} min</TableCell>
                 <TableCell>
                   <Badge variant="outline">
                     {service.isAvailableOnline ? (
@@ -106,9 +126,17 @@ const ServicesTable: React.FC<ServicesTableProps> = ({ services }) => {
                         variant="ghost"
                         size={'sm'}
                         className="cursor-pointer"
-                        // disabled={deleteMutation.isPending}
+                        disabled={deletingId === service.id}
                       >
-                        <Trash2Icon size={16} color="red" />
+                        {deletingId === service.id ? (
+                          <LoaderIcon
+                            size={16}
+                            color="red"
+                            className="animate-spin"
+                          />
+                        ) : (
+                          <Trash2Icon size={16} color="red" />
+                        )}
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -118,15 +146,15 @@ const ServicesTable: React.FC<ServicesTableProps> = ({ services }) => {
                         </AlertDialogTitle>
                         <AlertDialogDescription>
                           This action cannot be undone. This will permanently
-                          delete the service.
+                          delete the service &quot;{service.name}&quot;.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction
-                        // onClick={() => onDelete(service.id)}
+                          onClick={() => handleDelete(service.id)}
                         >
-                          Continue
+                          Delete
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>

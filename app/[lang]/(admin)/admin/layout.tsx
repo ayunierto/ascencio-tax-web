@@ -4,6 +4,7 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
 import { getCurrentUser } from '@/lib/actions/auth/me';
 import { getDictionary } from '@/lib/i18n/dictionaries';
+import { redirect } from 'next/navigation';
 
 export const metadata = {
   title: 'Ascencio Tax Inc - Admin Portal',
@@ -21,8 +22,7 @@ export default async function DashboardLayout({
   const dict = await getDictionary(lang as 'en' | 'es');
   const user = await getCurrentUser();
   if (!user) {
-    // opcional: redirigir a signin o mostrar placeholder
-    return <div>Necesitas iniciar sesión</div>;
+    redirect(`/${lang}/signin`);
   }
 
   return (
