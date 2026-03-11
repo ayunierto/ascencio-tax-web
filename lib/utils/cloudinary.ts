@@ -94,7 +94,7 @@ export function prepareImageUrlForServer(
   // If it's a Cloudinary URL with temp_files, extract the publicId
   if (isCloudinaryUrl(imageUrl)) {
     const publicId = extractPublicIdFromUrl(imageUrl);
-    
+
     // Only send if it's a temp file (new upload)
     if (publicId?.startsWith('temp_files/')) {
       return normalizeTempPublicId(publicId);
