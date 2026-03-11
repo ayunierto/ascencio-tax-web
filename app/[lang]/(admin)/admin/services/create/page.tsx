@@ -10,12 +10,11 @@ interface CreateServicePageProps {
 export default async function CreateServicePage({
   params,
 }: CreateServicePageProps) {
+  const { lang } = await params;
   const user = await getCurrentUser();
   if (!user) {
-    redirect('/signin');
+    redirect(`/${lang}/signin`);
   }
-
-  const { lang } = await params;
   const dict = await getDictionary(lang as 'en' | 'es');
 
   return (

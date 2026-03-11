@@ -1,21 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -25,33 +12,34 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import type { Service, PaginatedResponse } from '@ascencio/shared';
-import {
-  EditIcon,
-  EyeOff,
-  Trash2Icon,
-  VideoIcon,
-  VideoOff,
-  LoaderIcon,
-} from 'lucide-react';
+import { EyeOff, VideoIcon, VideoOff } from 'lucide-react';
 import { IconCircleCheckFilled } from '@tabler/icons-react';
-import { deleteService } from '@/lib/actions/services';
+import type { Dictionary } from '@/lib/i18n/dictionaries';
+import { useDeleteService } from '@/hooks/use-service-mutations';
+import { CrudTableActions } from '@/components/templates/crud/crud-table-actions';
 
 interface ServicesTableProps {
   services: PaginatedResponse<Service>;
+  dict: Dictionary;
+  lang: string;
 }
 
-const ServicesTable: React.FC<ServicesTableProps> = ({ services }) => {
+const ServicesTable: React.FC<ServicesTableProps> = ({
+  services,
+  dict,
+  lang,
+}) => {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const deleteMutation = useDeleteService({
+    dict,
+    onSuccess: () => router.refresh(),
+  });
 
   const handleDelete = async (id: string) => {
     setDeletingId(id);
     try {
-      await deleteService(id);
-      router.refresh();
-    } catch (error) {
-      console.error('Error deleting service:', error);
-      alert('Failed to delete service');
+      await deleteMutation.mutateAsync(id);
     } finally {
       setDeletingId(null);
     }
@@ -64,12 +52,12 @@ const ServicesTable: React.FC<ServicesTableProps> = ({ services }) => {
 
         <TableHeader className="bg-muted">
           <TableRow>
-            <TableHead>Image</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Duration</TableHead>
-            <TableHead>Online</TableHead>
-            <TableHead>State</TableHead>
-            <TableHead className="text-center">Actions</TableHead>
+            <TableHead>{dict.serviceTableImage}</TableHead>
+            <TableHead>{dict.serviceTableName}</TableHead>
+            <TableHead>{dict.serviceTableDuration}</TableHead>
+            <TableHead>{dict.serviceTableOnline}</TableHead>
+            <TableHead>{dict.serviceTableState}</TableHead>
+            <TableHead className="text-center">{dict.actions}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -79,21 +67,26 @@ const ServicesTable: React.FC<ServicesTableProps> = ({ services }) => {
                 <TableCell>
                   <img
                     src={service.imageUrl || 'https://placehold.co/150'}
-                    alt="service image"
+                    alt={dict.serviceImageAlt}
                     className="h-10 w-10 rounded-md object-cover"
                   />
                 </TableCell>
                 <TableCell>{service.name}</TableCell>
-                <TableCell>{service.durationMinutes} min</TableCell>
+                <TableCell>
+                  {service.durationMinutes} {dict.serviceMinutesShort}
+                </TableCell>
                 <TableCell>
                   <Badge variant="outline">
                     {service.isAvailableOnline ? (
                       <>
                         <VideoIcon size={16} className="mr-1 text-green-500" />
-                        Online
+                        {dict.serviceOnline}
                       </>
                     ) : (
-                      <VideoOff size={16} className="mr-1 text-red-500" />
+                      <>
+                        <VideoOff size={16} className="mr-1 text-red-500" />
+                        {dict.serviceOffline}
+                      </>
                     )}
                   </Badge>
                 </TableCell>
@@ -103,62 +96,27 @@ const ServicesTable: React.FC<ServicesTableProps> = ({ services }) => {
                     {service.isActive ? (
                       <>
                         <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-                        Active
+                        {dict.serviceActive}
                       </>
                     ) : (
                       <>
                         <EyeOff className="fill-green-500 dark:fill-green-400" />
-                        Inactive
+                        {dict.serviceInactive}
                       </>
                     )}
                   </Badge>
                 </TableCell>
 
                 <TableCell className="text-center">
-                  <Button variant="ghost" asChild size={'sm'}>
-                    <Link href={`/admin/services/${service.id}`}>
-                      <EditIcon size={16} />
-                    </Link>
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size={'sm'}
-                        className="cursor-pointer"
-                        disabled={deletingId === service.id}
-                      >
-                        {deletingId === service.id ? (
-                          <LoaderIcon
-                            size={16}
-                            color="red"
-                            className="animate-spin"
-                          />
-                        ) : (
-                          <Trash2Icon size={16} color="red" />
-                        )}
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently
-                          delete the service &quot;{service.name}&quot;.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => handleDelete(service.id)}
-                        >
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <CrudTableActions
+                    editHref={`/${lang}/admin/services/${service.id}`}
+                    onDelete={() => handleDelete(service.id)}
+                    isDeleting={deletingId === service.id}
+                    confirmTitle={dict.serviceDeleteConfirmTitle}
+                    confirmDescription={`${dict.serviceDeleteConfirmDesc} "${service.name}".`}
+                    cancelLabel={dict.cancel}
+                    deleteLabel={dict.delete}
+                  />
                 </TableCell>
               </TableRow>
             ))}

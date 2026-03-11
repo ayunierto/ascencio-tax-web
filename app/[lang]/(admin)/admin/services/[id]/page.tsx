@@ -12,12 +12,11 @@ interface EditServicePageProps {
 export default async function EditServicePage({
   params,
 }: EditServicePageProps) {
+  const { id, lang } = await params;
   const user = await getCurrentUser();
   if (!user) {
-    redirect('/signin');
+    redirect(`/${lang}/signin`);
   }
-
-  const { id, lang } = await params;
   const dict = await getDictionary(lang as 'en' | 'es');
 
   try {

@@ -2,19 +2,12 @@
 
 import { api } from '@/lib/api/api';
 import { authHeaders } from '@/lib/api/withAuth';
-import type { Service, PaginatedResponse } from '@ascencio/shared';
-
-export interface ServiceDto {
-  id?: string;
-  name: string;
-  description?: string;
-  address?: string;
-  durationMinutes?: number;
-  isAvailableOnline: boolean;
-  imageUrl?: string;
-  isActive: boolean;
-  staffIds: string[];
-}
+import type {
+  Service,
+  PaginatedResponse,
+  CreateServiceRequest,
+  UpdateServiceRequest,
+} from '@ascencio/shared';
 
 export interface Pagination {
   limit?: number;
@@ -42,7 +35,7 @@ export async function getService(id: string): Promise<Service> {
   return res.data;
 }
 
-export async function createService(dto: ServiceDto) {
+export async function createService(dto: CreateServiceRequest) {
   const headers = await authHeaders();
   const res = await api.post('/services', dto, {
     headers,
@@ -51,7 +44,7 @@ export async function createService(dto: ServiceDto) {
   return res.data;
 }
 
-export async function updateService(id: string, dto: Partial<ServiceDto>) {
+export async function updateService(id: string, dto: UpdateServiceRequest) {
   const headers = await authHeaders();
   const res = await api.patch(`/services/${id}`, dto, {
     headers,

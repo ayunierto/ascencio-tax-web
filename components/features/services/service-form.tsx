@@ -50,6 +50,17 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
 
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
+  const imageMessages = {
+    uploadButton: dict.imageUploadButton,
+    uploading: dict.imageUploading,
+    fileTypeError: dict.imageFileTypeError,
+    fileSizeError: dict.imageFileSizeError,
+    uploadError: dict.imageUploadError,
+    deleteError: dict.imageDeleteError,
+    previewAlt: dict.imagePreviewAlt,
+    helperText: dict.imageHelperText,
+  };
+
   const form = useForm<CreateServiceRequest>({
     resolver: zodResolver(serviceSchema),
     defaultValues: {
@@ -58,7 +69,7 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
       address: service?.address || '',
       durationMinutes: service?.durationMinutes || 60,
       isAvailableOnline: service?.isAvailableOnline || false,
-      imageUrl: service?.imageUrl || '',
+      imageUrl: service?.imageUrl || undefined,
       isActive: service?.isActive ?? true,
       staffIds: service?.staffMembers?.map((s) => s.id) || [],
     },
@@ -80,12 +91,10 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
       <FieldGroup>
         <div className="flex flex-col gap-1">
           <h1 className="text-xl sm:text-2xl font-bold">
-            {isEditing ? 'Edit Service' : 'New Service'}
+            {isEditing ? dict.serviceEditTitle : dict.serviceNewTitle}
           </h1>
           <p className="text-muted-foreground text-sm">
-            {isEditing
-              ? 'Update service information'
-              : 'Add a new service to your business'}
+            {isEditing ? dict.serviceEditSubtitle : dict.serviceNewSubtitle}
           </p>
         </div>
 
@@ -95,11 +104,11 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="name">Service Name *</FieldLabel>
+              <FieldLabel htmlFor="name">{dict.serviceNameLabel} *</FieldLabel>
               <Input
                 {...field}
                 id="name"
-                placeholder="Tax Consultation"
+                placeholder={dict.serviceNamePlaceholder}
                 aria-invalid={fieldState.invalid}
                 required
               />
@@ -114,11 +123,13 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="description">Description</FieldLabel>
+              <FieldLabel htmlFor="description">
+                {dict.serviceDescriptionLabel}
+              </FieldLabel>
               <Textarea
                 {...field}
                 id="description"
-                placeholder="Detailed description of the service..."
+                placeholder={dict.serviceDescriptionPlaceholder}
                 rows={4}
                 aria-invalid={fieldState.invalid}
               />
@@ -133,11 +144,13 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="address">Address</FieldLabel>
+              <FieldLabel htmlFor="address">
+                {dict.serviceAddressLabel}
+              </FieldLabel>
               <Input
                 {...field}
                 id="address"
-                placeholder="123 Main St, City, State"
+                placeholder={dict.serviceAddressPlaceholder}
                 aria-invalid={fieldState.invalid}
               />
               <FormFieldError dict={dict} error={fieldState.error} />
@@ -152,15 +165,24 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="durationMinutes">
-                Duration (minutes)
+                {dict.serviceDurationLabel}
               </FieldLabel>
               <Input
                 {...field}
                 id="durationMinutes"
                 type="number"
                 min="1"
-                onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
-                placeholder="60"
+                onChange={(e) => {
+                  const rawValue = e.target.value;
+                  const parsedValue =
+                    rawValue === '' ? undefined : Number(rawValue);
+                  field.onChange(
+                    Number.isNaN(parsedValue as number)
+                      ? undefined
+                      : parsedValue,
+                  );
+                }}
+                placeholder={dict.serviceDurationPlaceholder}
                 aria-invalid={fieldState.invalid}
               />
               <FormFieldError dict={dict} error={fieldState.error} />
@@ -178,7 +200,8 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
                 value={field.value}
                 onChange={field.onChange}
                 folder="temp_files"
-                label="Service Image"
+                label={dict.serviceImageLabel}
+                messages={imageMessages}
                 disabled={isSubmitting}
               />
               <FormFieldError dict={dict} error={fieldState.error} />
@@ -194,7 +217,7 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
             <Field>
               <div className="flex items-center justify-between">
                 <FieldLabel htmlFor="isAvailableOnline">
-                  Available Online
+                  {dict.serviceAvailableOnlineLabel}
                 </FieldLabel>
                 <Switch
                   id="isAvailableOnline"
@@ -213,7 +236,9 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
           render={({ field }) => (
             <Field>
               <div className="flex items-center justify-between">
-                <FieldLabel htmlFor="isActive">Active</FieldLabel>
+                <FieldLabel htmlFor="isActive">
+                  {dict.serviceActiveLabel}
+                </FieldLabel>
                 <Switch
                   id="isActive"
                   checked={field.value}
@@ -230,12 +255,14 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="staffIds">Staff Members *</FieldLabel>
+              <FieldLabel htmlFor="staffIds">
+                {dict.serviceStaffLabel} *
+              </FieldLabel>
               {loadingStaff ? (
                 <div className="flex items-center justify-center p-4 border rounded-md">
                   <LoaderIcon className="h-4 w-4 animate-spin mr-2" />
                   <span className="text-sm text-muted-foreground">
-                    Loading staff members...
+                    {dict.serviceStaffLoading}
                   </span>
                 </div>
               ) : (
@@ -244,7 +271,9 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
                   onValuesChange={field.onChange}
                 >
                   <MultiSelectTrigger className="w-full">
-                    <MultiSelectValue placeholder="Select staff members..." />
+                    <MultiSelectValue
+                      placeholder={dict.serviceStaffPlaceholder}
+                    />
                   </MultiSelectTrigger>
                   <MultiSelectContent>
                     {staffMembers.map((staff) => (
@@ -256,7 +285,7 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
                 </MultiSelect>
               )}
               <p className="text-xs text-muted-foreground mt-1">
-                Select at least one staff member who can provide this service.
+                {dict.serviceStaffHint}
               </p>
               <FormFieldError dict={dict} error={fieldState.error} />
             </Field>
@@ -272,7 +301,7 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
             disabled={isSubmitting}
             className="w-full sm:w-auto"
           >
-            Cancel
+            {dict.cancel}
           </Button>
           <Button
             type="submit"
@@ -282,7 +311,7 @@ export function ServiceForm({ service, lang, dict }: ServiceFormProps) {
             {isSubmitting && (
               <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />
             )}
-            {isEditing ? 'Update Service' : 'Create Service'}
+            {isEditing ? dict.serviceUpdateButton : dict.serviceCreateButton}
           </Button>
         </div>
       </FieldGroup>

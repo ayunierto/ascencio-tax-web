@@ -72,6 +72,7 @@ export function resolveCloudinaryUrl(value?: string): string | undefined {
 export function prepareImageUrlForServer(
   imageUrl?: string,
 ): string | undefined {
+  if (imageUrl === '') return '';
   if (!imageUrl) return undefined;
 
   const normalizeTempPublicId = (value: string): string => {
